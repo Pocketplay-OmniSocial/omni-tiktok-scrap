@@ -1,8 +1,8 @@
 # Omni-TikTok-Scraper
 
-CLI Python để lấy danh sách video từ kênh TikTok, xuất metadata `JSON`/`CSV`, và tải video về thư mục theo username.
+CLI + Web UI Python de lay danh sach video tu kenh TikTok, xuat metadata `JSON`/`CSV`, va tai video ve thu muc theo username.
 
-## Cài đặt
+## Cai dat
 
 ```powershell
 python -m venv .venv
@@ -10,28 +10,59 @@ python -m venv .venv
 pip install -e .
 ```
 
-## Dùng nhanh
+## CLI
 
 ```powershell
 omni-tiktok-scraper khaby.lame --limit 50
+omni-tiktok-scraper tiktokuser:MS4w... --limit 50
 ```
 
-Hoặc:
+Chi lay metadata:
 
 ```powershell
-python -m omni_tiktok_scraper https://www.tiktok.com/@khaby.lame --limit 100 --format csv
+omni-tiktok-scraper khaby.lame --limit 100 --no-download
 ```
 
-## Tùy chọn chính
+## Web UI
 
-- `--limit 100`: giới hạn số video. Bỏ qua để lấy tất cả video extractor trả về.
-- `--no-download`: chỉ xuất metadata, không tải video.
-- `--output downloads`: thư mục output.
-- `--format json|csv|both`: định dạng metadata.
-- `--cookies cookies.txt`: dùng cookie Netscape từ trình duyệt/exporter.
-- `--proxy http://user:pass@host:port`: dùng proxy cho metadata và download.
-- `--delay-min 1 --delay-max 4`: delay ngẫu nhiên giữa từng video download.
-- `--retries 3`: số lần thử lại mỗi video.
+```powershell
+omni-tiktok-web --host 127.0.0.1 --port 7860
+```
+
+Mo `http://127.0.0.1:7860`, nhap username/link hoac `tiktokuser:<channel_id/secUid>`, chon limit, output, cookie/proxy, roi bam `Bat dau tai`.
+
+Hoac double-click `run-web.bat`.
+
+O `Paste cookie` nhan 3 dang:
+
+- JSON tu `omni-chrome-cookies`.
+- Noi dung Netscape `cookies.txt`.
+- Header `Cookie: a=b; c=d`.
+
+Cookie paste duoc ghi thanh file tam va xoa sau khi job ket thuc.
+
+Form Web UI tu luu vao `localStorage` cua trinh duyet, gom ca cookie paste neu ban da nhap.
+
+Nut `Dung job` se dung process tai video dang chay. Bam `Ctrl+C` trong cua so server cung kill job con truoc khi thoat.
+
+Thanh progress hien video dang tai, phan tram, toc do va ETA khi `yt-dlp` tra ve du lieu tien trinh. UI poll moi 1 giay.
+
+Tu dong resolve profile `@username` sang `tiktokuser:<secUid>` khi co the de ne loi secondary user ID.
+
+Neu o `So video` bi trong do data cu, backend tu dung `50` de tranh quet ca kenh.
+
+## Tuy chon chinh
+
+- `--limit 100`: gioi han so video. Bo qua de lay tat ca video extractor tra ve.
+- `--no-download`: chi xuat metadata, khong tai video.
+- `--video-only`: tai video voi metadata toi thieu, giam loi khi quet kenh lon.
+- File `.mp4` da co se duoc skip, khong tai lai.
+- `--output downloads`: thu muc output.
+- `--format json|csv|both`: dinh dang metadata.
+- `--cookies cookies.txt`: dung cookie Netscape tu trinh duyet/exporter.
+- `--proxy http://user:pass@host:port`: dung proxy cho metadata va download.
+- `--delay-min 1 --delay-max 4`: delay ngau nhien giua tung video download.
+- `--retries 3`: so lan thu lai moi video.
 
 ## Output
 
@@ -45,8 +76,9 @@ downloads/
       001 - caption.mp4
 ```
 
-## Ghi chú
+## Ghi chu
 
-- Video không watermark phụ thuộc URL/format TikTok mà `yt-dlp` trích xuất được tại thời điểm chạy.
-- TikTok hay đổi API/chống bot. Nếu bị chặn, dùng `--cookies`, tăng delay, hoặc dùng `--proxy`.
-- Không tự động bypass CAPTCHA hoặc cơ chế bảo vệ đăng nhập.
+- Video khong watermark phu thuoc URL/format TikTok ma `yt-dlp` trich xuat duoc tai thoi diem chay.
+- TikTok hay doi API/chong bot. Neu bi chan, dung `--cookies`, tang delay, hoac dung `--proxy`.
+- `curl_cffi` bat buoc de `yt-dlp` impersonate Chrome khi lay profile TikTok.
+- Khong tu dong bypass CAPTCHA hoac co che bao ve dang nhap.
